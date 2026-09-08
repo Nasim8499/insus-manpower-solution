@@ -23,10 +23,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
       - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
@@ -37,54 +33,37 @@ jobs:
       - name: Install Android build packages
         run: |
           yes | sdkmanager "platforms;android-36" "build-tools;36.1.0" "platform-tools"
-      - name: Install Bubblewrap and Expect
-        run: |
-          sudo apt-get update
-          sudo apt-get install --yes expect
-          npm install --global @bubblewrap/cli
-      - name: Generate and build signed APK
+      - name: Build and sign APK
         env:
           STORE_PASS: ${{ github.run_id }}-insus-store
           KEY_PASS: ${{ github.run_id }}-insus-key
         run: |
           set -euo pipefail
-          mkdir -p twa-build "$HOME/.bubblewrap"
-          printf '{"jdkPath":"%s","androidSdkPath":"%s"}' "$JAVA_HOME" "$ANDROID_HOME" > "$HOME/.bubblewrap/config.json"
-          cat > /tmp/init-twa.expect <<'EXPECT'
-          #!/usr/bin/expect -f
-          set timeout 600
-          spawn bubblewrap init --manifest=https://nasim8499.github.io/insus-manpower-solution/manifest.webmanifest --directory=twa-build
-          expect -re {\? Domain:} { send "\r" }
-          expect -re {\? URL path:} { send "\r" }
-          expect -re {\? Application name:} { send "\r" }
-          expect -re {\? Short name:} { send "\r" }
-          expect -re {\? Application ID:} { send "com.insus.manpower\r" }
-          expect -re {\? Starting version code} { send "\r" }
-          expect -re {\? Display mode:} { send "\r" }
-          expect -re {\? Orientation:} { send "\r" }
-          expect -re {\? Status bar color:} { send "\r" }
-          expect -re {\? Splash screen color:} { send "\r" }
-          expect -re {\? Icon URL:} { send "\r" }
-          expect -re {\? Maskable icon URL:} { send "\r" }
-          expect -re {\? Monochrome icon URL:} { send "\r" }
-          expect -re {\? Include support for Play Billing\?} { send "\r" }
-          expect -re {\? Request geolocation permission\?} { send "\r" }
-          expect -re {\? Key store location:} { send "\r" }
-          expect -re {\? Key name:} { send "\r" }
-          expect -re {\? Do you want to create one now\?} { send "y\r" }
-          expect -re {\? First and Last names.*:} { send "INSUS Manpower Solution\r" }
-          expect -re {\? Organizational Unit.*:} { send "INSUS\r" }
-          expect -re {\? Organization.*:} { send "VisaHOBe\r" }
-          expect -re {\? Country.*:} { send "SG\r" }
-          expect -re {\? Password for the Key Store:} { send "$env(STORE_PASS)\r" }
-          expect -re {\? Password for the Key:} { send "$env(KEY_PASS)\r" }
-          expect eof
-          EXPECT
-          expect /tmp/init-twa.expect
-          (cd twa-build && BUBBLEWRAP_KEYSTORE_PASSWORD="$STORE_PASS" BUBBLEWRAP_KEY_PASSWORD="$KEY_PASS" bubblewrap build --skipPwaValidation)
           mkdir -p public/downloads public/.well-known
-          cp twa-build/app-release-signed.apk public/downloads/insus-manpower-solution.apk
-          FINGERPRINT=$(keytool -list -v -keystore twa-build/android.keystore -storepass "$STORE_PASS" -alias android | awk -F': ' '/SHA256:/{print $2; exit}')
+          keytool -genkeypair -v \
+            -keystore android/ci.keystore \
+            -storepass "$STORE_PASS" \
+            -keypass "$KEY_PASS" \
+            -alias android \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -dname "CN=INSUS Manpower Solution, OU=INSUS, O=VisaHOBe, C=SG"
+          chmod +x android/gradlew
+          (cd android && ./gradlew assembleRelease --no-daemon --stacktrace)
+          UNSIGNED="android/app/build/outputs/apk/release/app-release-unsigned.apk"
+          ALIGNED="/tmp/insus-aligned.apk"
+          SIGNED="public/downloads/insus-manpower-solution.apk"
+          "$ANDROID_HOME/build-tools/36.1.0/zipalign" -f -p 4 "$UNSIGNED" "$ALIGNED"
+          "$ANDROID_HOME/build-tools/36.1.0/apksigner" sign \
+            --ks android/ci.keystore \
+            --ks-key-alias android \
+            --ks-pass "pass:$STORE_PASS" \
+            --key-pass "pass:$KEY_PASS" \
+            --out "$SIGNED" \
+            "$ALIGNED"
+          "$ANDROID_HOME/build-tools/36.1.0/apksigner" verify "$SIGNED"
+          FINGERPRINT=$(keytool -list -v -keystore android/ci.keystore -storepass "$STORE_PASS" -alias android | awk -F': ' '/SHA256:/{print $2; exit}')
           printf '[{"relation":["delegate_permission/common.handle_all_urls"],"target":{"namespace":"android_app","package_name":"com.insus.manpower","sha256_cert_fingerprints":["%s"]}}]\n' "$FINGERPRINT" > public/.well-known/assetlinks.json
       - name: Commit APK and asset links
         run: |
