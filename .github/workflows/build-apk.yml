@@ -6,7 +6,6 @@ on:
     paths-ignore:
       - "public/downloads/insus-manpower-solution.apk"
       - "public/.well-known/assetlinks.json"
-      - "public/apk-build-error.txt"
   workflow_dispatch:
 
 permissions:
@@ -37,7 +36,7 @@ jobs:
       - name: Build and sign APK
         env:
           STORE_PASS: ${{ github.run_id }}-insus-store
-          KEY_PASS: ${{ github.run_id }}-insus-key
+          KEY_PASS: ${{ github.run_id }}-insus-store
         run: |
           exec > >(tee /tmp/apk-build.log) 2>&1
           set -euo pipefail
@@ -67,16 +66,6 @@ jobs:
           "$ANDROID_HOME/build-tools/36.1.0/apksigner" verify "$SIGNED"
           FINGERPRINT=$(keytool -list -v -keystore android/ci.keystore -storepass "$STORE_PASS" -alias android | awk -F': ' '/SHA256:/{print $2; exit}')
           printf '[{"relation":["delegate_permission/common.handle_all_urls"],"target":{"namespace":"android_app","package_name":"com.insus.manpower","sha256_cert_fingerprints":["%s"]}}]\n' "$FINGERPRINT" > public/.well-known/assetlinks.json
-      - name: Publish APK build diagnostics
-        if: failure()
-        run: |
-          cp /tmp/apk-build.log public/apk-build-error.txt 2>/dev/null || printf 'APK build failed before output was captured.\n' > public/apk-build-error.txt
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/apk-build-error.txt
-          git diff --cached --quiet && exit 0
-          git commit -m "chore: publish APK build diagnostics"
-          git push
       - name: Commit APK and asset links
         run: |
           git config user.name "github-actions[bot]"
