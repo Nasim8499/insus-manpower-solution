@@ -20,11 +20,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+          uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Set up Java 17
-        uses: actions/setup-java@v4
+          uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "17"
@@ -50,7 +50,7 @@ jobs:
             -validity 10000 \
             -dname "CN=INSUS Manpower Solution, OU=INSUS, O=VisaHOBe, C=SG"
           chmod +x android/gradlew
-          (cd android && ./gradlew assembleRelease --no-daemon --stacktrace)
+          (cd android && ./gradlew assembleRelease --no-daemon --stacktrace --console=plain)
           UNSIGNED="android/app/build/outputs/apk/release/app-release-unsigned.apk"
           ALIGNED="/tmp/insus-aligned.apk"
           SIGNED="public/downloads/insus-manpower-solution.apk"

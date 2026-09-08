@@ -1,6 +1,6 @@
 {
   "packageId": "com.insus.manpower",
-  "host": "https://CHANGE-THIS-to-your-deployed-site-url",
+  "host": "https://nasim8499.github.io/insus-manpower-solution",
   "name": "INSUS Manpower Solution",
   "launcherName": "INSUS",
   "display": "standalone",
@@ -10,8 +10,8 @@
   "navigationColorDark": "#0b1c3d",
   "backgroundColor": "#ffffff",
   "startUrl": "/",
-  "iconUrl": "https://CHANGE-THIS-to-your-deployed-site-url/icons/icon-512.png",
-  "maskableIconUrl": "https://CHANGE-THIS-to-your-deployed-site-url/icons/icon-maskable-512.png",
+  "iconUrl": "https://nasim8499.github.io/insus-manpower-solution/icons/icon-512.png",
+  "maskableIconUrl": "https://nasim8499.github.io/insus-manpower-solution/icons/icon-maskable-512.png",
   "orientation": "portrait",
   "fingerprints": [],
   "appVersion": "1.0.0",
