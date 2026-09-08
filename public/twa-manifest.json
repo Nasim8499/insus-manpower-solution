@@ -1,0 +1,25 @@
+{
+  "packageId": "com.insus.manpower",
+  "host": "https://CHANGE-THIS-to-your-deployed-site-url",
+  "name": "INSUS Manpower Solution",
+  "launcherName": "INSUS",
+  "display": "standalone",
+  "themeColor": "#ffffff",
+  "themeColorDark": "#0b1c3d",
+  "navigationColor": "#ffffff",
+  "navigationColorDark": "#0b1c3d",
+  "backgroundColor": "#ffffff",
+  "startUrl": "/",
+  "iconUrl": "https://CHANGE-THIS-to-your-deployed-site-url/icons/icon-512.png",
+  "maskableIconUrl": "https://CHANGE-THIS-to-your-deployed-site-url/icons/icon-maskable-512.png",
+  "orientation": "portrait",
+  "fingerprints": [],
+  "appVersion": "1.0.0",
+  "appVersionCode": 1,
+  "features": {},
+  "shortcuts": [
+    { "name": "FAQ", "url": "/#faq" },
+    { "name": "Process", "url": "/#process" },
+    { "name": "Contact", "url": "/#contact" }
+  ]
+}
