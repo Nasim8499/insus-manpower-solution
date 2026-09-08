@@ -1,0 +1,107 @@
+Warning:  Different store and key passwords not supported for PKCS12 KeyStores. Ignoring user-specified -keypass value.
+Generating 2,048 bit RSA key pair and self-signed certificate (SHA256withRSA) with a validity of 10,000 days
+	for: CN=INSUS Manpower Solution, OU=INSUS, O=VisaHOBe, C=SG
+[Storing android/ci.keystore]
+Downloading https://services.gradle.org/distributions/gradle-8.11.1-bin.zip
+..................................................................................................................................
+
+Welcome to Gradle 8.11.1!
+
+Here are the highlights of this release:
+ - Parallel load and store for Configuration Cache
+ - Java compilation errors at the end of the build output
+ - Consolidated report for warnings and deprecations
+
+For more details see https://docs.gradle.org/8.11.1/release-notes.html
+
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.11.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:mergeReleaseJniLibFolders
+> Task :app:mergeReleaseNativeLibs NO-SOURCE
+> Task :app:stripReleaseDebugSymbols NO-SOURCE
+> Task :app:extractReleaseNativeSymbolTables NO-SOURCE
+> Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :app:checkReleaseDuplicateClasses
+> Task :app:javaPreCompileRelease
+> Task :app:checkReleaseAarMetadata
+> Task :app:generateReleaseResValues
+> Task :app:mapReleaseSourceSetPaths
+> Task :app:generateReleaseResources
+> Task :app:packageReleaseResources
+> Task :app:mergeReleaseResources
+> Task :app:createReleaseCompatibleScreenManifests
+> Task :app:extractDeepLinksRelease
+> Task :app:parseReleaseLocalResources
+
+> Task :app:processReleaseMainManifest
+package="com.insus.manpower" found in source AndroidManifest.xml: /home/runner/work/insus-manpower-solution/insus-manpower-solution/android/app/src/main/AndroidManifest.xml.
+Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported, and the value is ignored.
+Recommendation: remove package="com.insus.manpower" from the source AndroidManifest.xml: /home/runner/work/insus-manpower-solution/insus-manpower-solution/android/app/src/main/AndroidManifest.xml.
+
+> Task :app:processReleaseManifest
+> Task :app:desugarReleaseFileDependencies
+> Task :app:mergeReleaseStartupProfile
+> Task :app:processReleaseManifestForPackage
+> Task :app:mergeExtDexRelease
+> Task :app:mergeReleaseArtProfile
+> Task :app:mergeReleaseShaders
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :app:mergeReleaseAssets
+> Task :app:compressReleaseAssets
+> Task :app:extractReleaseVersionControlInfo
+> Task :app:extractProguardFiles
+> Task :app:processReleaseJavaRes NO-SOURCE
+> Task :app:collectReleaseDependencies
+> Task :app:processReleaseResources
+> Task :app:mergeReleaseJavaResource
+> Task :app:sdkReleaseDependencyData
+
+> Task :app:compileReleaseJavaWithJavac
+Note: /home/runner/work/insus-manpower-solution/insus-manpower-solution/android/app/src/main/java/com/insus/manpower/LauncherActivity.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :app:dexBuilderRelease
+> Task :app:mergeReleaseGlobalSynthetics
+> Task :app:mergeDexRelease
+> Task :app:generateReleaseLintVitalReportModel
+> Task :app:compileReleaseArtProfile
+> Task :app:writeReleaseAppMetadata
+> Task :app:writeReleaseSigningConfigVersions
+> Task :app:optimizeReleaseResources
+> Task :app:lintVitalAnalyzeRelease
+> Task :app:lintVitalReportRelease
+> Task :app:lintVitalRelease
+> Task :app:packageRelease
+> Task :app:createReleaseApkListingFileRedirect
+> Task :app:assembleRelease
+[Incubating] Problems report is available at: file:///home/runner/work/insus-manpower-solution/insus-manpower-solution/android/build/reports/problems/problems-report.html
+
+BUILD SUCCESSFUL in 43s
+42 actionable tasks: 42 executed
+Failed to load signer "signer #1"
+java.io.IOException: Failed to obtain key with alias "android" from android/ci.keystore. Wrong password?
+	at com.android.apksigner.SignerParams.loadPrivateKeyAndCertsFromKeyStore(SignerParams.java:399)
+	at com.android.apksigner.SignerParams.loadPrivateKeyAndCerts(SignerParams.java:246)
+	at com.android.apksigner.ApkSignerTool.getSignerConfig(ApkSignerTool.java:455)
+	at com.android.apksigner.ApkSignerTool.sign(ApkSignerTool.java:368)
+	at com.android.apksigner.ApkSignerTool.main(ApkSignerTool.java:94)
+Caused by: java.security.UnrecoverableKeyException: Get Key failed: Given final block not properly padded. Such issues can arise if a bad key is used during decryption.
+	at java.base/sun.security.pkcs12.PKCS12KeyStore.engineGetKey(PKCS12KeyStore.java:450)
+	at java.base/sun.security.util.KeyStoreDelegator.engineGetKey(KeyStoreDelegator.java:91)
+	at java.base/java.security.KeyStore.getKey(KeyStore.java:1070)
+	at com.android.apksigner.SignerParams.getKeyStoreKey(SignerParams.java:513)
+	at com.android.apksigner.SignerParams.loadPrivateKeyAndCertsFromKeyStore(SignerParams.java:367)
+	... 4 more
+Caused by: javax.crypto.BadPaddingException: Given final block not properly padded. Such issues can arise if a bad key is used during decryption.
+	at java.base/com.sun.crypto.provider.CipherCore.unpad(CipherCore.java:862)
+	at java.base/com.sun.crypto.provider.CipherCore.fillOutputBuffer(CipherCore.java:942)
+	at java.base/com.sun.crypto.provider.CipherCore.doFinal(CipherCore.java:735)
+	at java.base/com.sun.crypto.provider.PBES2Core.engineDoFinal(PBES2Core.java:325)
+	at java.base/javax.crypto.Cipher.doFinal(Cipher.java:2220)
+	at java.base/sun.security.pkcs12.PKCS12KeyStore.lambda$engineGetKey$0(PKCS12KeyStore.java:371)
+	at java.base/sun.security.pkcs12.PKCS12KeyStore$RetryWithZero.run(PKCS12KeyStore.java:257)
+	at java.base/sun.security.pkcs12.PKCS12KeyStore.engineGetKey(PKCS12KeyStore.java:361)
+	... 8 more
