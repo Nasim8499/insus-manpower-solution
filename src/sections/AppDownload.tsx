@@ -8,7 +8,7 @@ import {
   ShareIcon,
 } from "../components/icons";
 
-const APK_URL = "/downloads/insus-manpower-solution.apk";
+const APK_URL = `${import.meta.env.BASE_URL}downloads/insus-manpower-solution.apk`;
 
 const ANDROID_STEPS = [
   "Download APK-তে ট্যাপ করুন",
